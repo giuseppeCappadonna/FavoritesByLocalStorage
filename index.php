@@ -14,6 +14,7 @@
             <ul>
                 <li><a href="index.php">Home</a></li>
                 <li><a href="preferiti.php">Preferiti</a></li>
+                <li><a class="GET">Preferiti by url</a></li>
                 <li><a class="deleteCookie">X Clear Cookie</a></li>
             </ul>
         </nav>

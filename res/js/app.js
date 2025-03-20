@@ -4,6 +4,10 @@ let isDebug = true;
 let pageId = document.body.getAttribute("data-pageId");
 
 document.addEventListener('DOMContentLoaded', function() {
+    if(pageId === 'home'){
+        setGetBtn();
+    }
+
     if(pageId === 'preferiti'){
         loadFavoritesOnPage();
     }else{
@@ -81,6 +85,19 @@ function removeFavorites(card) {
         if(pageId === 'preferiti'){
             card.remove();
         }
+        if(pageId === 'preferiti_GET'){
+            card.remove();
+            if (history.pushState) {
+                let newUrl = window.location.pathname;
+        
+                if (favorites.length > 0) {
+                    newUrl += "?favorites=" + encodeURIComponent(JSON.stringify(favorites));
+                }
+        
+                window.history.pushState(null, "", newUrl);
+                printLog("URL aggiornato: " + newUrl);
+            }
+        }
     }
     setLocalFavorites(favorites);
 }
@@ -106,6 +123,15 @@ function printFavorites() {
 // funzione che elimina il Local Storage
 function deleteFavorites() {
     localStorage.removeItem('favorites');
+
+    if(pageId === 'preferiti_GET'){
+        if (history.pushState) {
+            let newUrl = window.location.pathname;
+            window.history.pushState(null, "", newUrl);
+            window.location.reload();
+            printLog("URL aggiornato: " + newUrl);
+        }
+    }
 }
 
 // GET LOCAL STORAGE LOGIC
@@ -138,6 +164,23 @@ function loadFavoritesOnPage() {
     } else {
         favoriteItemsCont.innerHTML = "<h5>Nessun Preferito</h5>";
     }
+}
+
+// GET LOGIC
+// ------------------------
+function setGetBtn(){
+    document.querySelector(".GET").addEventListener('click', function(event) {
+        event.preventDefault();
+        let favorites = getLocalFavorites();
+        
+        if (favorites.length === 0) {
+            printLog("Nessun preferito da inviare");
+            return;
+        }
+    
+        let queryString = "preferitiByUrl.php?favorites=" + encodeURIComponent(JSON.stringify(favorites));
+        window.location.href = queryString;
+    });
 }
 
 // debug logic
